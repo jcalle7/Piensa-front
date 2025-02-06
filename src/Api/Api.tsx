@@ -1,10 +1,13 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.0.103'; // Cambia esto por tu URL real del backend
+const API_URL = 'http://10.0.7.64:3000'; 
 
 const api = axios.create({
     baseURL: API_URL,
-    timeout: 10000, // 10 segundos para el timeout
+    timeout: 10000, 
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
 interface UserCredentials {
@@ -15,7 +18,7 @@ interface UserCredentials {
 
 export const registerUser = async ({username, email, password}: UserCredentials) => {
   try {
-    const response = await api.post(`${API_URL} auth/register`, {
+    const response = await api.post('/auth/register', {
       username,
       email,
       password,
@@ -27,13 +30,14 @@ export const registerUser = async ({username, email, password}: UserCredentials)
   }
 };
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (username: string, email: string, password: string) => {
   try {
-    const response = await api.post(`${API_URL} auth/login`, {
+    const response = await api.post('/auth/login', {
+      username,
       email,
       password,
     });
-    return response.data; // Esto debe contener el token JWT
+    return response.data; 
   } catch (error) {
     console.error(error);
     throw new Error('Error al iniciar sesión');

@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import { loginUser } from '../Api/Api'; // Función para iniciar sesión
+import { loginUser } from '../Api/Api'; 
 
 const LoginScreen = ({ navigation }: any) => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      await loginUser(email, password); // Intentar iniciar sesión
+      const response = await loginUser(username, email, password); 
+      const {username: realUserName, email: realEmail} = response.user;
       Alert.alert('Login exitoso');
-      navigation.navigate('Home'); // Redirigir a la pantalla de inicio
+      navigation.navigate('Dashboard', {
+        username: realUserName,
+        email: realEmail,
+      }); 
     } catch (error) {
       Alert.alert('Error', 'No se pudo iniciar sesión');
     }
@@ -19,6 +24,12 @@ const LoginScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <Text>Iniciar sesión</Text>
+      <TextInput
+        placeholder="Usuario"
+        value={username}
+        onChangeText={setUsername}
+        style={styles.input}
+      />
       <TextInput
         placeholder="Correo"
         value={email}

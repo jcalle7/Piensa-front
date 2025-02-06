@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import { registerUser } from '../Api/Api'; // Función para registrar al usuario
+import { registerUser } from '../Api/Api'; 
 
 const RegisterScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState('');
@@ -9,9 +9,9 @@ const RegisterScreen = ({ navigation }: any) => {
 
   const handleRegister = async () => {
     try {
-      await registerUser({username, email, password}); // Registrar al usuario
+      await registerUser({username, email, password}); 
       Alert.alert('Registrado con éxito');
-      navigation.navigate('Login'); // Redirigir a Login después del registro
+      navigation.navigate('Login'); 
     } catch (error) {
       Alert.alert('Error', 'No se pudo registrar el usuario');
     }
