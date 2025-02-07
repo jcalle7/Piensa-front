@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { loginUser } from '../Api/Api'; 
 
 const LoginScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     try {
-      const response = await loginUser(username, email, password); 
-      const {username: realUserName, email: realEmail} = response.user;
+      const response = await loginUser(username, password); 
+      const {username: realUserName} = response.user;
       Alert.alert('Login exitoso');
       navigation.navigate('Dashboard', {
-        username: realUserName,
-        email: realEmail,
+        username: realUserName
       }); 
     } catch (error) {
       Alert.alert('Error', 'No se pudo iniciar sesión');
@@ -23,27 +23,42 @@ const LoginScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <Text>Iniciar sesión</Text>
-      <TextInput
-        placeholder="Usuario"
-        value={username}
-        onChangeText={setUsername}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Correo"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-      />
+      <Text style={styles.titleLogin}>Iniciar sesión</Text>
+
+      <View style={styles.inputContainerLogin}>
+      <MaterialCommunityIcons name="account" size={24} color="#007BFF" style={styles.iconLogin} />
+        <TextInput
+          placeholder="Usuario"
+          value={username}
+          onChangeText={setUsername}
+          style={styles.inputL}
+          placeholderTextColor="#555"
+        />
+      </View>
+
+    <View style={styles.inputContainerLogin}>
+      <MaterialCommunityIcons name="lock" size={24} color="#007BFF" style={styles.iconLogin} />
       <TextInput
         placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
-        style={styles.input}
+        secureTextEntry={!showPassword}
+        style={styles.inputL}
+        placeholderTextColor="#555"
       />
-      <Button title="Iniciar sesión" onPress={handleLogin} />
+      <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+        <MaterialCommunityIcons 
+          name={showPassword ? 'eye-off' : 'eye'} 
+          size={24} 
+          color="#007BFF" 
+          style={styles.iconLogin} 
+        />
+      </TouchableOpacity>
+    </View>
+ 
+    <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
+      <Text style={styles.buttonTextLogin}>Iniciar Sesión</Text>
+    </TouchableOpacity>
     </View>
   );
 };
@@ -53,16 +68,50 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ADB1B4',
     padding: 16,
-    marginBottom: 50,
+    marginBottom: 0,
   },
-  input: {
-    width: '80%',
-    padding: 15,
+  titleLogin: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+    marginBottom: 30, // Separación del título respecto a los inputs
+  },
+  inputContainerLogin: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    width: '90%',
+    borderRadius: 10,
+    paddingHorizontal: 10,
     marginBottom: 20,
-    borderColor: '#ccc',
+  },
+  iconLogin: {
+    marginRight: 10,
+  },
+  inputL: {
+    flex: 1,
+    paddingVertical: 15,
+    fontSize: 16,
+    color: '#333',
+  },
+  buttonLogin: {
+    backgroundColor: '#007BFF',
+    borderColor: '#007BFF',
     borderWidth: 2,
-    borderRadius: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    width: 200,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonTextLogin: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

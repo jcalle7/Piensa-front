@@ -1,26 +1,26 @@
 // src/screens/AccountScreen.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Card, Button } from 'react-native-paper'; // Si no lo usas, puedes reemplazar con tus propios estilos
+import { Card, Button } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+ // Si no lo usas, puedes reemplazar con tus propios estilos
 
-// Tip: Si obtienes los datos de usuario (username, email) desde
-// algún contexto, Redux o AsyncStorage, ajústalo según tu lógica.
-// Aquí, por simplicidad, se asume que los recibimos vía route.params.
 const AccountScreen = ({ route, navigation }: any) => {
   const { username, email } = route.params || {};
 
   const handleLogout = () => {
-    // Lógica de logout: limpiar tokens, etc.
-    // Después, navegas al Login o a la pantalla que prefieras:
     navigation.navigate('Login');
   };
 
   return (
     <View style={styles.container}>
       <Card style={styles.userCard}>
-        <Card.Content>
-          <Text style={styles.nameText}>{username || 'Nombre de Usuario'}</Text>
-          <Text style={styles.emailText}>{email || 'correo@ejemplo.com'}</Text>
+        <Card.Content style={styles.cardContent}>
+          <MaterialCommunityIcons name="account-circle" size={50} color="#007AFF" />
+          <View style={styles.userInfo}>
+            <Text style={styles.nameText}>{username || 'Nombre de Usuario'}</Text>
+            <Text style={styles.emailText}>{email || 'correo@ejemplo.com'}</Text>
+          </View>
         </Card.Content>
       </Card>
 
@@ -47,27 +47,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   userCard: {
-    marginBottom: 20,
-    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    width: '100%',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000', 
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userInfo: {
+    marginLeft: 15,
   },
   nameText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 4,
   },
   emailText: {
     fontSize: 16,
     color: '#555',
   },
   buttonContainer: {
-    marginTop: 'auto', // para que los botones queden al final
+    marginTop: 400, // para que los botones queden al final
   },
   outlinedButton: {
     marginBottom: 16,
   },
   logoutButton: {
-    // Se ajusta con buttonColor="red" y textColor="#fff"
+    width: 180, // Menos ancho
+    height: 50, // Más alto
+    justifyContent: 'center',
+    borderRadius: 10,
   },
 });

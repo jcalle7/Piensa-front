@@ -6,6 +6,7 @@ import RegisterScreen from './src/screens/Register';
 import LoginScreen from './src/screens/Login';
 import DashboardScreen from './src/screens/Dashboard';
 import AccountScreen from './src/screens/AccountScreen';
+import ConsumptionHistory from './src/screens/ConsumptionHistory';
 
 const Stack = createStackNavigator();
 
@@ -31,12 +32,17 @@ const App = () => {
           <Stack.Screen
           name="Dashboard"
           component={DashboardScreen}
-          options={{ title: 'Bienvenidos' }}
+          options={{ title: 'Inicio' }}
         />
           <Stack.Screen
           name="Account"
           component={AccountScreen}
           options={{ title: 'Cuenta' }}
+        />
+          <Stack.Screen
+          name="History"
+          component={ConsumptionHistory}
+          options={{ title: 'Historial de Consumo' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

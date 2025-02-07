@@ -23,15 +23,14 @@ const DashboardScreen = ({route, navigation} :any) => {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#f8f8f8', padding: 16 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: '#f8f8f8', padding: 20 }}>
       {/* Header */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
         <View>
           <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{currentTime}</Text>
           <Text style={{ fontSize: 14, color: 'gray' }}>{currentDate}</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <Feather name="bell" size={24} color="gray" />
           <TouchableOpacity
             onPress={() => 
               navigation.navigate('Account', {
@@ -111,14 +110,14 @@ const DashboardScreen = ({route, navigation} :any) => {
       </View>
 
       {/* Menú de Opciones */}
-      {["Historial de Consumo"].map((item, index) => (
-        <Card key={index} style={{ marginBottom: 8 }}>
+      <TouchableOpacity onPress={() => navigation.navigate('History')}>
+        <Card style={{ marginBottom: 8 }}>
           <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text>{item}</Text>
-            <Feather name="chevron-right" size={24} color="gray" />
+            <Text>Historial de Consumo</Text>
+              <Feather name="chevron-right" size={24} color="gray" />
           </Card.Content>
         </Card>
-      ))}
+      </TouchableOpacity>
     </ScrollView>
   );
 };

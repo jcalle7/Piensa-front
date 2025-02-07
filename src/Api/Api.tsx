@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://10.0.7.64:3000'; 
+const API_URL = 'http://10.0.2.88:3000'; 
 
 const api = axios.create({
     baseURL: API_URL,
@@ -30,11 +30,10 @@ export const registerUser = async ({username, email, password}: UserCredentials)
   }
 };
 
-export const loginUser = async (username: string, email: string, password: string) => {
+export const loginUser = async (username: string, password: string) => {
   try {
     const response = await api.post('/auth/login', {
       username,
-      email,
       password,
     });
     return response.data; 
