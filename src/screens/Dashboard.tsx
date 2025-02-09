@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { Card, Button } from 'react-native-paper';
 import { MaterialIcons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 
@@ -39,31 +39,31 @@ const DashboardScreen = ({route, navigation} :any) => {
               })
             }
           >
-          <Feather name="user" size={24} color="gray" />
+          <Feather name="user" size={35} color="blue" />
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Estado General */}
-      <Card style={{ marginBottom: 16 }}>
+      <Card style={{ marginBottom: 20 }}>
         <Card.Title title="Estado General" />
         <Card.Content>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <MaterialCommunityIcons
                 name="water"
-                size={32}
+                size={45}
                 color={valveStatus ? 'blue' : 'gray'}
               />
               <View>
-                <Text style={{ fontWeight: '500' }}>Suministro de Agua</Text>
+                <Text style={{ fontWeight: '700' }}>Electroválvula</Text>
                 <Text style={{ color: 'gray' }}>{valveStatus ? 'Activo' : 'Desactivado'}</Text>
               </View>
             </View>
             <TouchableOpacity onPress={toggleValve} accessibilityLabel="Toggle Water Valve">
               <MaterialCommunityIcons
                 name="power"
-                size={32}
+                size={50}
                 color={valveStatus ? 'green' : 'red'}
               />
             </TouchableOpacity>
@@ -72,24 +72,24 @@ const DashboardScreen = ({route, navigation} :any) => {
       </Card>
 
       {/* Alertas */}
-      <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 8 }}>Alertas Activas</Text>
-      <Card style={{ backgroundColor: '#FFCDD2', marginBottom: 8 }}>
+      <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 8 }}>Alertas Activas</Text>
+      <Card style={[ styles.alertCard, { backgroundColor: '#DC3545' }]}>
         <Card.Content>
-          <MaterialIcons name="error" size={24} color="red" />
-          <Text style={{ fontWeight: 'bold' }}>Fuga Detectada</Text>
-          <Text>Se detectó una fuga en el baño principal</Text>
-          <Text>Consumo anormal: 15L/min</Text>
-          <Text style={{ color: 'gray' }}>Detectado el: 12/01/2025 - 15:23:45</Text>
+          <MaterialIcons name="warning" size={24} color="orange" />
+          <Text style={{ fontWeight: 'bold', color: 'white'}}>Fuga Detectada</Text>
+          <Text style={styles.alertText}>Se detectó una fuga en el baño principal</Text>
+          <Text style={styles.alertText}>Consumo anormal: 15 L/min</Text>
+          <Text style={{ color: '#D9D9D9' }}>Detectado el: 12/01/2025 - 15:23:45</Text>
         </Card.Content>
       </Card>
 
-      <Card style={{ backgroundColor: '#FFF9C4', marginBottom: 16 }}>
+      <Card style={{ backgroundColor: '#D4C716', marginBottom: 16,     shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 5, }}>
         <Card.Content>
-          <MaterialIcons name="warning" size={24} color="orange" />
-          <Text style={{ fontWeight: 'bold' }}>Consumo Elevado</Text>
-          <Text>Consumo superior al promedio en el baño principal</Text>
-          <Text>Consumo actual: 25L/hora </Text>
-          <Text style={{ color: 'gray' }}>Detectado el: 12/01/2025 - 16:45:12</Text>
+          <MaterialIcons name="error" size={24} color="red" />
+          <Text style={{ fontWeight: 'bold', color: 'white' }}>Consumo Elevado</Text>
+          <Text style={styles.alertText}>Consumo superior al promedio en el baño principal</Text>
+          <Text style={styles.alertText}>Consumo actual: 25 L/hora </Text>
+          <Text style={{ color: '#504A4A' }}>Detectado el: 12/01/2025 - 16:45:12</Text>
         </Card.Content>
       </Card>
 
@@ -99,12 +99,6 @@ const DashboardScreen = ({route, navigation} :any) => {
           <Card.Content style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'blue' }}>150L</Text>
             <Text style={{ color: 'gray' }}>Consumo Hoy</Text>
-          </Card.Content>
-        </Card>
-        <Card style={{ flex: 1 }}>
-          <Card.Content style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'blue' }}>4.5K L</Text>
-            <Text style={{ color: 'gray' }}>Consumo Mensual</Text>
           </Card.Content>
         </Card>
       </View>
@@ -121,5 +115,20 @@ const DashboardScreen = ({route, navigation} :any) => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  alertCard: {
+    marginBottom: 15,
+    shadowColor: '#000', 
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+  },
+  alertText: {
+    color: 'white'
+  },
+  alertDate: {
+    color: '#D9D9D9',
+  },
+});
 
 export default DashboardScreen;
