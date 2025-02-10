@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { Card, Button } from 'react-native-paper';
+import { Card } from 'react-native-paper';
 import { MaterialIcons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import axios from 'axios';
 
-const DashboardScreen = ({route, navigation} :any) => {
-
+const DashboardScreen = ({ route, navigation }: any) => {
   const { username, email } = route.params || {};
   const [valveStatus, setValveStatus] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   const [currentDate, setCurrentDate] = useState(new Date().toLocaleDateString());
+  const [sensorData, setSensorData] = useState({
+    timestamp: '',
+    leak_status: false,
+    high_consumption: false,
+    valve_status: true,
+    location: '',
+    user_id: 0,
+    flowRate: 0,
+    totalLiters: 0,
+  });
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -18,97 +28,88 @@ const DashboardScreen = ({route, navigation} :any) => {
     return () => clearInterval(timer);
   }, []);
 
-  const toggleValve = () => {
-    setValveStatus((prevStatus) => !prevStatus);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://192.168.0.104:3000/sensor/latest');
+        setSensorData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+    const interval = setInterval(fetchData, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const toggleValve = async () => {
+    try {
+      const response = await axios.post('http://192.168.0.104:3000/sensor/toggle-valve', { status: !valveStatus });
+      setValveStatus(response.data.status);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#f8f8f8', padding: 20 }}>
-      {/* Header */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+      <View style={styles.headerContainer}>
         <View>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{currentTime}</Text>
-          <Text style={{ fontSize: 14, color: 'gray' }}>{currentDate}</Text>
+          <Text style={styles.headerTime}>{currentTime}</Text>
+          <Text style={styles.headerDate}>{currentDate}</Text>
         </View>
-        <View style={{ flexDirection: 'row', gap: 12 }}>
-          <TouchableOpacity
-            onPress={() => 
-              navigation.navigate('Account', {
-              username,
-              email,
-              })
-            }
-          >
+        <TouchableOpacity onPress={() => navigation.navigate('Account', { username, email })}>
           <Feather name="user" size={35} color="blue" />
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
 
-      {/* Estado General */}
-      <Card style={{ marginBottom: 20 }}>
+      <Card style={styles.card}>
         <Card.Title title="Estado General" />
-        <Card.Content>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <MaterialCommunityIcons
-                name="water"
-                size={45}
-                color={valveStatus ? 'blue' : 'gray'}
-              />
-              <View>
-                <Text style={{ fontWeight: '700' }}>Electroválvula</Text>
-                <Text style={{ color: 'gray' }}>{valveStatus ? 'Activo' : 'Desactivado'}</Text>
-              </View>
+        <Card.Content style={styles.rowBetween}>
+          <View style={styles.row}>
+            <MaterialCommunityIcons name="water" size={45} color={sensorData.valve_status ? 'blue' : 'gray'} />
+            <View>
+              <Text style={styles.cardTitle}>Electroválvula</Text>
+              <Text style={styles.cardSubtitle}>{sensorData.valve_status ? 'Activo' : 'Desactivado'}</Text>
             </View>
-            <TouchableOpacity onPress={toggleValve} accessibilityLabel="Toggle Water Valve">
-              <MaterialCommunityIcons
-                name="power"
-                size={50}
-                color={valveStatus ? 'green' : 'red'}
-              />
-            </TouchableOpacity>
           </View>
+          <TouchableOpacity onPress={toggleValve}>
+            <MaterialCommunityIcons name="power" size={50} color={sensorData.valve_status ? 'green' : 'red'} />
+          </TouchableOpacity>
         </Card.Content>
       </Card>
 
-      {/* Alertas */}
-      <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 8 }}>Alertas Activas</Text>
-      <Card style={[ styles.alertCard, { backgroundColor: '#DC3545' }]}>
+      <Text style={styles.sectionTitle}>Alertas Activas</Text>
+      <Card style={[styles.alertCard, { backgroundColor: sensorData.leak_status ? '#DC3545' : '#007BFF' }]}>
         <Card.Content>
-          <MaterialIcons name="warning" size={24} color="orange" />
-          <Text style={{ fontWeight: 'bold', color: 'white'}}>Fuga Detectada</Text>
-          <Text style={styles.alertText}>Se detectó una fuga en el baño principal</Text>
-          <Text style={styles.alertText}>Consumo anormal: 15 L/min</Text>
-          <Text style={{ color: '#D9D9D9' }}>Detectado el: 12/01/2025 - 15:23:45</Text>
+          <MaterialIcons name={sensorData.leak_status ? 'warning' : 'check'} size={24} color="orange" />
+          <Text style={styles.alertText}>{sensorData.leak_status ? 'Fuga Detectada' : 'No se detectaron fugas'}</Text>
+          <Text style={styles.alertText}>Consumo actual: {sensorData.flowRate} L/min</Text>
+          <Text style={styles.alertDate}>Detectado el: {sensorData.timestamp}</Text>
         </Card.Content>
       </Card>
 
-      <Card style={{ backgroundColor: '#D4C716', marginBottom: 16,     shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 5, }}>
+      <Card style={[styles.alertCard, { backgroundColor: sensorData.high_consumption ? '#D4C716' : '#28A745' }]}>
         <Card.Content>
-          <MaterialIcons name="error" size={24} color="red" />
-          <Text style={{ fontWeight: 'bold', color: 'white' }}>Consumo Elevado</Text>
-          <Text style={styles.alertText}>Consumo superior al promedio en el baño principal</Text>
-          <Text style={styles.alertText}>Consumo actual: 25 L/hora </Text>
-          <Text style={{ color: '#504A4A' }}>Detectado el: 12/01/2025 - 16:45:12</Text>
+          <MaterialIcons name={sensorData.high_consumption ? 'error' : 'check'} size={24} color="red" />
+          <Text style={styles.alertText}>{sensorData.high_consumption ? 'Consumo Elevado' : 'Consumo Normal'}</Text>
+          <Text style={styles.alertText}>Consumo actual: {sensorData.flowRate} L/min</Text>
+          <Text style={styles.alertDate}>Detectado el: {sensorData.timestamp}</Text>
         </Card.Content>
       </Card>
 
-      {/* Estadísticas */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Card style={{ flex: 1, marginRight: 8 }}>
-          <Card.Content style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'blue' }}>150L</Text>
-            <Text style={{ color: 'gray' }}>Consumo Hoy</Text>
-          </Card.Content>
-        </Card>
-      </View>
+      <Card style={styles.statCard}>
+        <Card.Content style={styles.centerContent}>
+          <Text style={styles.statValue}>{sensorData.totalLiters}L</Text>
+          <Text style={styles.statLabel}>Consumo Hoy</Text>
+        </Card.Content>
+      </Card>
 
-      {/* Menú de Opciones */}
       <TouchableOpacity onPress={() => navigation.navigate('History')}>
-        <Card style={{ marginBottom: 8 }}>
-          <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Card style={styles.optionCard}>
+          <Card.Content style={styles.rowBetween}>
             <Text>Historial de Consumo</Text>
-              <Feather name="chevron-right" size={24} color="gray" />
+            <Feather name="chevron-right" size={24} color="gray" />
           </Card.Content>
         </Card>
       </TouchableOpacity>
@@ -117,18 +118,23 @@ const DashboardScreen = ({route, navigation} :any) => {
 };
 
 const styles = StyleSheet.create({
-  alertCard: {
-    marginBottom: 15,
-    shadowColor: '#000', 
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-  },
-  alertText: {
-    color: 'white'
-  },
-  alertDate: {
-    color: '#D9D9D9',
-  },
+  headerContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 },
+  headerTime: { fontSize: 20, fontWeight: 'bold' },
+  headerDate: { fontSize: 14, color: 'gray' },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  card: { marginBottom: 20 },
+  cardTitle: { fontWeight: '700' },
+  cardSubtitle: { color: 'gray' },
+  sectionTitle: { fontWeight: 'bold', fontSize: 20, marginBottom: 8 },
+  alertCard: { marginBottom: 15, shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 5 },
+  alertText: { color: 'white' },
+  alertDate: { color: '#D9D9D9' },
+  statCard: { flex: 1, marginBottom: 16 },
+  centerContent: { alignItems: 'center' },
+  statValue: { fontSize: 24, fontWeight: 'bold', color: 'blue' },
+  statLabel: { color: 'gray' },
+  optionCard: { marginBottom: 8 },
+  rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
 });
 
 export default DashboardScreen;
