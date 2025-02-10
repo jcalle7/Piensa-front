@@ -28,16 +28,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF'
   },
   title: {
-    fontSize: 24, // Tamaño grande
+    fontSize: 24, 
     fontWeight: 'bold',
-    color: '#007BFF', // Azul
+    color: '#007BFF', 
     textAlign: 'center',
     marginVertical: 50,
     margin:25,
   },
   button: {
-    backgroundColor: '#007BFF', // Fondo transparente
-    borderColor: '#007BFF', // Borde azul
+    backgroundColor: '#007BFF', 
+    borderColor: '#007BFF', 
     borderWidth: 3,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#FFFFFF', // Texto azul
+    color: '#FFFFFF', 
     fontSize: 18,
     fontWeight: 'bold',
   },

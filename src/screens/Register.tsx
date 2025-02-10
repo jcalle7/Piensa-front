@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     textAlign: 'center',
-    marginBottom: 30, // Separación del título respecto a los inputs
+    marginBottom: 30, 
   },
   inputContainerRegister: {
     flexDirection: 'row',

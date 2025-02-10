@@ -31,7 +31,7 @@ const DashboardScreen = ({ route, navigation }: any) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://192.168.0.104:3000/sensor/latest');
+        const response = await axios.get('http://10.0.7.10:3000/sensor/latest');
         setSensorData(response.data);
       } catch (error) {
         console.error(error);
@@ -44,7 +44,7 @@ const DashboardScreen = ({ route, navigation }: any) => {
 
   const toggleValve = async () => {
     try {
-      const response = await axios.post('http://192.168.0.104:3000/sensor/toggle-valve', { status: !valveStatus });
+      const response = await axios.post('http://10.0.7.10:3000/sensor/toggle-valve', { status: !valveStatus });
       setValveStatus(response.data.status);
     } catch (error) {
       console.error(error);

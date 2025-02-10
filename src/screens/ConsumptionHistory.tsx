@@ -26,18 +26,6 @@ const ConsumptionHistory = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      {/*<View style={styles.header}>
-        <TouchableOpacity style={styles.iconButton}>
-          <ArrowLeft size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Histórico de Lecturas</Text>
-        <TouchableOpacity style={styles.iconButton}>
-          <Download size={20} color="#555" />
-        </TouchableOpacity>
-      </View>/*}
-
-      {/* Botón Día */}
 
       {/* Gráfico de Consumo */}
       <Card style={styles.card}>
